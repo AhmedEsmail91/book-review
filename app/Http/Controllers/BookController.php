@@ -18,10 +18,10 @@ class BookController extends Controller
         // or simply use arrow function:
         $books=Book::when($title,fn($query,$title)=>$query->title($title))->get();
 
-        // return view('books.index',['books'=>$books]);
+        return view('books.index',['books'=>$books]);
         // or simply use the compact('var_name') this compact function which will find a variable with the name 
         // var_name and turn it into an array with the key (var_name) and the value of the variable with the same name:
-        return view('books.index',compact('books'));
+        // return view('books.index',compact('books'));
     }
 
     /**
