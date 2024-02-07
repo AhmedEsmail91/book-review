@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 use \App\Models\Book;
 
@@ -26,3 +27,5 @@ Route::get('/', function () {
 //     // $min_reviews
 //     return view('welcome',['data'=>$books]);
 // });
+
+Route::resource('book',BookController::class);
