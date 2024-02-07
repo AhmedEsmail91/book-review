@@ -19,7 +19,7 @@ Route::get('/', function () {
     $from=date('Y-m-d', strtotime("-$num years"));
     $to=date("Y-m-d", strtotime("-5 years"));
     $books = Book::HighestRated($from,$to)->minReviews(20)->paginate(22);
-    return view('welcome', ['data' => $books]);
+    return view('Data-table', ['data' => $books]);
 });
 // Route::get('/', function () {
 //     $minReviewsNumber=10;
@@ -27,5 +27,7 @@ Route::get('/', function () {
 //     // $min_reviews
 //     return view('welcome',['data'=>$books]);
 // });
-
+Route::get('/', function () {
+    return redirect()->route('books.index');
+});
 Route::resource('book',BookController::class);
