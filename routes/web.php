@@ -14,18 +14,4 @@ use \App\Models\Book;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-// Route::get('/', function () {
-//     $num=12;
-//     $from=date('Y-m-d', strtotime("-$num years"));
-//     $to=date("Y-m-d", strtotime("-5 years"));
-//     $books = Book::HighestRated($from,$to)->minReviews(20)->paginate(22);
-//     return view('Data-table', ['data' => $books]);
-// });
-// Route::get('/', function () {
-//     $minReviewsNumber=10;
-//     $books=Book::minReviews($minReviewsNumber)->paginate(20);
-//     // $min_reviews
-//     return view('welcome',['data'=>$books]);
-// });
-
 Route::resource('books',BookController::class);

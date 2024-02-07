@@ -42,10 +42,10 @@
         </table>
     @endif
         {{-- Pagination --}}
-    @if ($data->count ())
+    {{-- @if ($data->count ())
     <nav>
         {{$data->links ()}}
     </nav>
-	@endif
+	@endif --}}
 </body>
 </html>

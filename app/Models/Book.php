@@ -21,8 +21,12 @@ class Book extends Model
     but instead we built it inside the model which is callable and the $query argument is filled by laravel 
     which provids it to the function through Builder DataType 
     */
+    
     public function scopeTitle(Builder $query,string $title):Builder|QueryBuilder {
         return $query->where('title','like','%'. $title. '%');
+    }
+    public function scopeAvgRating(Builder $query): Builder|QueryBuilder {
+        return $query->withAvg('reviews','rating');
     }
 
     
