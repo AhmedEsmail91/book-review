@@ -50,8 +50,12 @@ class Book extends Model
         return $query->withAvg([
             'reviews'=>fn(Builder $q)=>$this->dateRangeFilter($query,$from,$to)
             ],'rating')
+        ->withCount('reviews')
         ->orderBy('reviews_avg_rating','desc');
     }
     // Adding real-life use case
-    
+    Public function scopeMinReviews(Builder $query,$minReviews):Builder|QueryBuilder{
+        // return $query->whereCount('reviews')->having('reviews_count');
+        return $query->having('reviews_count','>',$minReviews)->orderBy('reviews_count','asc');
+    }
 }
