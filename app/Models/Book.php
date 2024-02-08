@@ -23,7 +23,7 @@ class Book extends Model
     */
     
     public function scopeTitle(Builder $query,string $title):Builder|QueryBuilder {
-        return $query->withAvg('reviews','rating')->where('title','like','%'. $title. '%');
+        return $query->where('title','like','%'. $title. '%');
     }
     public function scopeAvgRating(Builder $query): Builder|QueryBuilder {
         return $query->withAvg('reviews','rating');
