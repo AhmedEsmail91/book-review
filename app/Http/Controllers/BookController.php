@@ -16,7 +16,7 @@ class BookController extends Controller
         //     return $query->title($title);
         // })->paginate(20);
         // or simply use arrow function:
-        $books=Book::when($title,fn($query,$title)=>$query->title($title))->get();
+        $books=Book::when($title,fn($query,$title)=>$query->title($title))->avgRating()->paginate(15);
 
         return view('books.index',['books'=>$books]);
         // or simply use the compact('var_name') this compact function which will find a variable with the name 
