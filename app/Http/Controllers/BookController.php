@@ -12,16 +12,20 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $title=$request->input('title');
-        // $books=Book::when($title,function($query,$title){
-        //     return $query->title($title);
-        // })->paginate(20);
-        // or simply use arrow function:
-        $books=Book::when($title,fn($query,$title)=>$query->title($title))->avgRating()->paginate(15);
+        $filter=$request->input('filter');
 
-        return view('books.index',['books'=>$books]);
-        // or simply use the compact('var_name') this compact function which will find a variable with the name 
-        // var_name and turn it into an array with the key (var_name) and the value of the variable with the same name:
-        // return view('books.index',compact('books'));
+        $books=Book::when($title,fn($query,$title)=>$query->title($title));
+        // switch function like match
+        $books = match ($filter) {
+            'popular_last_month' => $books->popularLastMonth(),
+            'popular_last_6months' => $books->popularLast6Months(),
+            'highest_rated_last_month' => $books->highestRatedLastMonth(),
+            'highest_rated_last_6months' => $books->highestRatedLast6Months(),
+            default => $books->latest()->withAvgRating()->withReviewsCount()
+        };
+        
+
+        return view('books.index',['books'=>$books->paginate(),'filtora'=>$filter]);
     }
 
     /**

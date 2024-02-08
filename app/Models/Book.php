@@ -13,53 +13,83 @@ class Book extends Model
 {
     use HasFactory;
     protected $fillable = [ 'title', 'author' ];
-    public function reviews() {
+    public function reviews()
+    {
         return $this->hasMany(Review::class);
     }
-    /*
-    the following method is equavilant to Book::where('title','like','%$title');
-    but instead we built it inside the model which is callable and the $query argument is filled by laravel 
-    which provids it to the function through Builder DataType 
-    */
-    
-    public function scopeTitle(Builder $query,string $title):Builder|QueryBuilder {
-        return $query->where('title','like','%'. $title. '%');
-    }
-    public function scopeAvgRating(Builder $query): Builder|QueryBuilder {
-        return $query->withAvg('reviews','rating');
+
+    public function scopeTitle(Builder $query, string $title): Builder
+    {
+        return $query->where('title', 'LIKE', '%' . $title . '%');
     }
 
-    
-    // The filter will be applied if both from_date and to_date are provided in
-    private function dateRangeFilter(Builder $query, $from=null, $to=null) {
-        if($from && !$to){
-            $query->where('created_at','>=',$from);
-        }
-        elseif(!$from && $to){
-            $query->where('created_at','<=',$to);
-        }
-        elseif ($from && $to){
-            $query->whereBetween('created_at',[$from ,$to]);
-        }
-    
-    }
-    public function scopePopular(Builder $query,$from=null,$to=null):Builder|QueryBuilder {
+    public function scopeWithReviewsCount(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
         return $query->withCount([
-            // in arrow functions we don't put use() function to access the data from the scope and its limitation is that it takes just 1 expretion
-            'reviews'=>fn(Builder $q)=>$this->dateRangeFilter($query,$from,$to)
-            ])
-            ->orderBy('created_at','asc');
+            'reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)
+        ]);
     }
-    public function scopeHighestRated(Builder $query,$from=null,$to=null):Builder|QueryBuilder {
+
+    public function scopeWithAvgRating(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
         return $query->withAvg([
-            'reviews'=>fn(Builder $q)=>$this->dateRangeFilter($query,$from,$to)
-            ],'rating')
-        ->withCount('reviews')
-        ->orderBy('reviews_avg_rating','desc');
+            'reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)
+        ], 'rating');
     }
-    // Adding real-life use case
-    Public function scopeMinReviews(Builder $query,$minReviews):Builder|QueryBuilder{
-        // return $query->whereCount('reviews')->having('reviews_count');
-        return $query->having('reviews_count','>',$minReviews)->orderBy('reviews_count','asc');
+
+    public function scopePopular(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
+        return $query->withReviewsCount()
+            ->orderBy('reviews_count', 'desc');
+    }
+
+    public function scopeHighestRated(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
+        return $query->withAvgRating()
+            ->orderBy('reviews_avg_rating', 'desc');
+    }
+
+    public function scopeMinReviews(Builder $query, int $minReviews): Builder|QueryBuilder
+    {
+        return $query->having('reviews_count', '>=', $minReviews);
+    }
+
+    private function dateRangeFilter(Builder $query, $from = null, $to = null)
+    {
+        if ($from && !$to) {
+            $query->where('created_at', '>=', $from);
+        } elseif (!$from && $to) {
+            $query->where('created_at', '<=', $to);
+        } elseif ($from && $to) {
+            $query->whereBetween('created_at', [$from, $to]);
+        }
+    }
+
+    public function scopePopularLastMonth(Builder $query): Builder|QueryBuilder
+    {
+        return $query->popular(now()->subMonth(), now())
+            ->highestRated(now()->subMonth(), now())
+            ->minReviews(2);
+    }
+
+    public function scopePopularLast6Months(Builder $query): Builder|QueryBuilder
+    {
+        return $query->popular(now()->subMonths(6), now())
+            ->highestRated(now()->subMonths(6), now())
+            ->minReviews(5);
+    }
+
+    public function scopeHighestRatedLastMonth(Builder $query): Builder|QueryBuilder
+    {
+        return $query->highestRated(now()->subMonth(), now())
+            ->popular(now()->subMonth(), now())
+            ->minReviews(2);
+    }
+
+    public function scopeHighestRatedLast6Months(Builder $query): Builder|QueryBuilder
+    {
+        return $query->highestRated(now()->subMonths(6), now())
+            ->popular(now()->subMonths(6), now())
+            ->minReviews(5);
     }
 }
