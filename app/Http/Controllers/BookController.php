@@ -24,8 +24,8 @@ class BookController extends Controller
             default => $books->latest()->withAvgRating()->withReviewsCount()
         };
         
-
-        return view('books.index',['books'=>$books->paginate(),'filtora'=>$filter]);
+        $books=$books->paginate();
+        return view('books.index',['books'=>$books,'filtora'=>$filter]);
     }
 
     /**
@@ -49,15 +49,19 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
+        Book::find($book->id)->withAvg('reviews','rating');
         return view('books.show', ['book' => $book]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Book $book)
     {
-        //
+        // $book=$book
+        return view('books.edit',['book'=>$book->load(
+            ['review'=>fn($query)=>$query->latest()]
+        )]);
     }
 
     /**
