@@ -98,4 +98,9 @@ class Book extends Model
             return Review::goodReview();
         });
     }
+    protected static function booted(){
+        static::updated(fn(Book $book)=>cache()->forget('book:'.$book->id));
+        static::deleted(fn(Book $book)=>cache()->forget('book:'.$book->id));
+        
+    }
 }
