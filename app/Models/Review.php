@@ -30,7 +30,8 @@ class Review extends Model
     public static function scopeBadReview(Builder $query):Builder |QueryBuilder{
         return $query ->whereBetween('rating',[1,3]);
     }
-    public static function scopeAverageIndividualBook(Builder $query):?float{
-        return $query->avg('rating');
+    public static function scopeAverageIndividualBook(Builder $query):Builder | QueryBuilder{
+        return $query->selectRaw('avg(rating) as average_rating')
+        ->groupBy('book_id');
     }
 }

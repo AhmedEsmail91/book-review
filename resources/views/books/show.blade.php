@@ -7,7 +7,7 @@
     <div class="book-author mb-4 text-lg font-semibold">by {{ $book->author }}</div>
     <div class="book-rating flex items-center">
         <div class="mr-2 text-sm font-medium text-slate-700">
-        {{number_format($avg_rating,1)}}
+        {{number_format($book->avg_rating,1)}}
         </div>
         <span class="book-review-count text-sm text-gray-500">
         {{ $book->reviews_count }} {{ Str::plural('review', 5) }}
@@ -46,3 +46,4 @@
         <button type="submit" class="bg-blue-500 hover:bg-blue-600 rounded-md shadow px-4 py-2 text-white">Edit Book</button>
     </form>
 </div>
+

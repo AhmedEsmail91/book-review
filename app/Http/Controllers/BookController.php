@@ -49,13 +49,13 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $RatingQuality=request()->input('ranking');
-        $avg_rating=Review::where('book_id',$book)->AverageIndividualBook();
-
-        $book=$book->load([
-            'reviews'
+        $book=$book
+        ->load([
+            'reviews'=>fn($q)=>$q->orderByDesc('rating')
         ]);
-        return view('books.show', ['book' => $book,'avg_rating'=>$avg_rating]);
+        $book->avg_rating = $book->reviews->avg('rating');
+        return view('books.show', compact('book'));
+
     }
 
     /**
