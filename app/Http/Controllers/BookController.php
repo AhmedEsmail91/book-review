@@ -60,7 +60,7 @@ class BookController extends Controller
     {
         // $book=$book
         return view('books.edit',['book'=>$book->load(
-            ['review'=>fn($query)=>$query->latest()]
+            ['reviews'=>fn($query)=>$query->latest()]
         )]);
     }
 
