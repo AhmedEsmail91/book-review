@@ -42,7 +42,7 @@ class BookController extends Controller
         $cacheKey="books:$filter:$title";
         // $books=cache()->remember($cacheKey, 3600, fn()=>$books->get());
         $books=cache()->remember($cacheKey, 3600, function()use($books){
-            dd('not cached');
+            // dd('not cached'); //this massage will be disaplyed in case of first loading of the page Reference:- S2:V61
             return $books->get();
         });
         
