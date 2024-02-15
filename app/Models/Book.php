@@ -49,7 +49,7 @@ class Book extends Model
             ->orderBy('reviews_avg_rating', 'desc');
     }
 
-    private function scopeMinReviews(Builder $query, int $minReviews): Builder|QueryBuilder
+    public function scopeMinReviews(Builder $query, int $minReviews): Builder|QueryBuilder
     {
         return $query->having('reviews_count', '>=', $minReviews);
     }
@@ -92,7 +92,10 @@ class Book extends Model
             ->popular(now()->subMonths(6), now())
             ->minReviews(2);
     }
+    // this in case of loading all books with good reviews only so it can be for many books not just one book
     public function scopeGoodReviews(Builder $query) : Builder|QueryBuilder{
-        return $query->with('reviews')->having("rating", ">=" , 4);
+        return $query->whereHas('reviews', function (Builder $query) {
+            return Review::goodReview();
+        });
     }
 }

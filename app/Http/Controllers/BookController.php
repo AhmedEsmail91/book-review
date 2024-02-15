@@ -49,12 +49,12 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        return view('books.show', ['book' => $book->load([
-            'reviews'=>fn($q)=>$q->latest()
-        ])]);
-        // return view('books.show', ['book' => $book->load(
-        //     ['reviews'=>fn($q)=>$q->orderByDesc('rating')]
-        // )]);
+        $RatingQuality=request()->input('ranking');
+        
+        $book=$book->load([
+            'reviews'=>fn($q)=>$q->avgReview()
+        ]);
+        return view('books.show', ['book' => $book]);
     }
 
     /**

@@ -19,14 +19,15 @@ class Review extends Model
         return $this->belongsTo(Book::class);
         
     }
-    public static function  goodReview(Builder $query):Builder | QueryBuilder{
+    // to load only the reviews on the book with the following scopes which are good, avg, bad reviews on that book only
+    public static function  scopeGoodReview(Builder $query):Builder | QueryBuilder{
         return $query ->where('rating','>=',4); 
     }
-    public static function avgReview(Builder $query):Builder | QueryBuilder{
+    public static function scopeAvgReview(Builder $query):Builder | QueryBuilder{
         return $query ->whereBetween('rating',[2,5]);
         
     }
-    public static function badReview(Builder $query):Builder |QueryBuilder{
+    public static function scopeBadReview(Builder $query):Builder |QueryBuilder{
         return $query ->whereBetween('rating',[1,3]);
     }
 }
