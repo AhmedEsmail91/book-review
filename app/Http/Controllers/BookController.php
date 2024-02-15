@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use \App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Review;
 class BookController extends Controller
 {
@@ -24,7 +25,27 @@ class BookController extends Controller
             default => $books->latest()->withAvgRating()->withReviewsCount()
         };
         
-        $books=$books->paginate();
+        /*----------------------------------------------Cacheing----------------------------------------------*/
+        // With cache we need some kind of key to store data in it  so we can get it later if needed
+        // remember('key',reservation_time,function_to_return_data).
+        // and then replace the retrieved pagination result with it:
+        // $books=$books->paginate();
+        /* $books=Cache::remember('books',3600,fn()=> $books->paginate()); */
+        // or instead of using static function simply make an object and callback the method:
+        /* $books=cache()->remember('books',3600,fn()=> $books->paginate()); */
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // the cache key must be unique cause in case of using filtering or searching from any user the result will be showen for other users too
+        // so in that case we gonna make a cacheKey for each situation.
+        //chaching name using md5 encryption more secured: 
+        // $cacheKey=md5("books?title={$title}&filter={$filter}");
+        // simple  caching without any condition :
+        $cacheKey="books:$filter:$title";
+        // $books=cache()->remember($cacheKey, 3600, fn()=>$books->get());
+        $books=cache()->remember($cacheKey, 3600, function()use($books){
+            dd('not cached');
+            return $books->get();
+        });
+        
         return view('books.index',['books'=>$books,'filtora'=>$filter]);
     }
 
