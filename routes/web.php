@@ -14,4 +14,5 @@ use \App\Models\Book;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/',fn()=>redirect()->route('books.index'));
 Route::resource('books',BookController::class);

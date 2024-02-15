@@ -70,12 +70,18 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book=$book
+        // reserving each book in cache once visiting
+        // Note: to check that just modify the DB from PHPMyAdmin and then refresh the page, the page reserve the old data 
+
+        $cacheKey='book:'.$book->id;
+        $book=cache()->remember($cacheKey,3600,fn()=>$book
         ->load([
-            'reviews'=>fn($q)=>$q->orderByDesc('rating')
-        ]);
+            'reviews'=>fn($q)=>$q->latest()
+        ]));
+        
         $book->avg_rating = $book->reviews->avg('rating');
-        return view('books.show', compact('book'));
+
+        return view('books.show', ['book'=>$book]);
 
     }
 
