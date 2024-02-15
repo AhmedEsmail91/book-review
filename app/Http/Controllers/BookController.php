@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use \App\Models\Book;
 use Illuminate\Http\Request;
-
+use App\Models\Review;
 class BookController extends Controller
 {
     /**
@@ -50,11 +50,12 @@ class BookController extends Controller
     public function show(Book $book)
     {
         $RatingQuality=request()->input('ranking');
-        
+        $avg_rating=Review::where('book_id',$book)->AverageIndividualBook();
+
         $book=$book->load([
-            'reviews'=>fn($q)=>$q->avgReview()
+            'reviews'
         ]);
-        return view('books.show', ['book' => $book]);
+        return view('books.show', ['book' => $book,'avg_rating'=>$avg_rating]);
     }
 
     /**
