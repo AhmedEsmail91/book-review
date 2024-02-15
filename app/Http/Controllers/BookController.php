@@ -49,8 +49,12 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        Book::find($book->id)->withAvg('reviews','rating');
-        return view('books.show', ['book' => $book]);
+        return view('books.show', ['book' => $book->load([
+            'reviews'=>fn($q)=>$q->latest()
+        ])]);
+        // return view('books.show', ['book' => $book->load(
+        //     ['reviews'=>fn($q)=>$q->orderByDesc('rating')]
+        // )]);
     }
 
     /**
@@ -58,10 +62,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        // $book=$book
-        return view('books.edit',['book'=>$book->load(
-            ['reviews'=>fn($query)=>$query->latest()]
-        )]);
+
     }
 
     /**

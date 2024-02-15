@@ -49,7 +49,7 @@ class Book extends Model
             ->orderBy('reviews_avg_rating', 'desc');
     }
 
-    public function scopeMinReviews(Builder $query, int $minReviews): Builder|QueryBuilder
+    private function scopeMinReviews(Builder $query, int $minReviews): Builder|QueryBuilder
     {
         return $query->having('reviews_count', '>=', $minReviews);
     }
@@ -91,5 +91,8 @@ class Book extends Model
         return $query->highestRated(now()->subMonths(6), now())
             ->popular(now()->subMonths(6), now())
             ->minReviews(2);
+    }
+    public function scopeGoodReviews(Builder $query) : Builder|QueryBuilder{
+        return $query->with('reviews')->having("rating", ">=" , 4);
     }
 }
