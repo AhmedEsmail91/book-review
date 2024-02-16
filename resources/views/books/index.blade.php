@@ -45,7 +45,9 @@
                         </div>
                         <div>
                         <div class="book-rating">
-                            {{number_format($book->reviews_avg_rating,1)}}
+                            {{-- visulaize the starts rating --}}
+                            
+                            <x-star-rating :rating="number_format($book->reviews_avg_rating,1)"/>
                         </div>
                         <div class="book-rating">
                         </div>
