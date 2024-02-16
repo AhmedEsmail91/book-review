@@ -1,0 +1,28 @@
+Scoped Resource Controller-Adding a Review:
+in this topic , I would like to add a review for a book.
+but as known the Review can't be exist without a book to make reviews on it.
+so there's a relation which is connect them together to be one Entity.
+Also in routing the route must will be changed, in this seciton we gonna learn more about:
+
+**Scoping Resource Routes**
+Laravel's scoped implicit model binding feature can automatically
+scope nested bindings such that the resolved child model is confirmed to belong to the parent model.
+By using the scoped method when defining your nested resource,
+you may enable automatic scoping as well as instruct Laravel on which field the child resource should be retrieved by
+Ex:
+{
+use App\Http\Controllers\PhotoCommentController;
+ 
+Route::resource('photos.comments', PhotoCommentController::class)->scoped([
+    'comment' => 'slug',
+]);
+}
+This route will register a scoped nested resource
+
+that may be accessed with URIs like the following:
+{
+/photos/{photo}/comments/{comment:slug}
+}
+
+BTW: Laravel can figure out the relation between The Book and Reviews Because we told
+Laravel that Book has many Reviews

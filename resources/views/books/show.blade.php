@@ -19,7 +19,9 @@
     </div>
     </div>
 </div>
-
+<div class="mb-4">
+    <a class="reset-link" href="{{route('books.reviews.create',compact('book'))}}">Add a review !</a>
+</div>
 <div>
     <h2 class="mb-4 text-xl font-semibold">Reviews</h2>
     <ul>
@@ -44,10 +46,4 @@
     </ul>
 </div>
 @endsection
-<div>
-    <form action="{{route('books.edit',['book'=>$book])}}" method="get">
-        <input type="hidden" name="id" value={{$book->id}} />
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 rounded-md shadow px-4 py-2 text-white">Edit Book</button>
-    </form>
-</div>
 

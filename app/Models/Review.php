@@ -48,6 +48,8 @@ class Review extends Model
         // you can check that before making updating page using tinker by making an instance of it an then make a modification and then $review->save();
         static::updated(fn(Review $review)=>cache()->forget('book:'.$review->book->id /* or simply  $review->book_id but the previous is more generalized */));
         static::deleted(fn(Review $review)=>cache()->forget('book:'.$review->book->id));
+        // because of caching the new reviwe won't be Displayed so we have to add another event for creation not just the modification and deletion
+        static::created(fn(Review $review)=>cache()->forget('book:'.$review->book->id));
         
     }
 }
