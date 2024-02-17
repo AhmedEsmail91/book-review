@@ -33,7 +33,6 @@
     </div>
     
     <ul>
-
         @forelse ($books as $book)
             <li class="mb-4">
                 <div class="book-item">

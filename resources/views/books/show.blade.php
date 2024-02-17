@@ -20,7 +20,7 @@
     </div>
 </div>
 <div class="mb-4">
-    <a class="reset-link" href="{{route('books.reviews.create',compact('book'))}}">Add a review !</a>
+    <a class="reset-link" href="{{route('books.reviews.create',['book'=>$book])}}">Add a review !</a>
 </div>
 <div>
     <h2 class="mb-4 text-xl font-semibold">Reviews</h2>

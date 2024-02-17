@@ -5,7 +5,7 @@
             @if (ceil($rating)>=$i)
                 ★
             @else
-                ☆  
+
             @endif
         @endfor
     @else

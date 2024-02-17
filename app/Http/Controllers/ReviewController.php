@@ -27,17 +27,47 @@ class ReviewController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,Book $book)
-    {
-        $data= $request->validate(
-            [
-                'review'=>'required|min:15',
-                'rating'=> 'required:min:1|max:5|integer'
-            ]
-            );
-            $book->reviews()->create($data);
-            return redirect()->route('books.show',compact('book'))->with('review_added','A new Review added successfully');
-    }
+    public function store(Request $request, Book $book)
+{
+    $validatedData = $request->validate([
+        'review' => 'required|min:15',
+        'rating' => 'required|integer|min:1|max:5',
+    ], [
+        'review.required' => 'Review Field is Required Mother Fucker',
+        'review.min' => 'The review must be at least 15 characters long.',
+        'rating.required' => 'Please Add Rating',
+        'rating.integer' => 'The rating must be a whole number.',
+        'rating.min' => 'The rating must be at least 1.',
+        'rating.max' => 'The rating must be at most 5.',
+    ]);
+
+    $book->reviews()->create($validatedData);
+
+    return redirect()->route('books.show', compact('book'))->with('review_added', 'A new Review added successfully');
+}
+
+    /*
+    Note: we can cusmize the error(validation) message:
+    public function store(Request $request, Book $book)
+{
+    $validatedData = $request->validate([
+        'review' => 'required|min:15',
+        'rating' => 'required|integer|min:1|max:5',
+    ], [
+        'review.required' => 'The review field is required.',
+        'review.min' => 'The review must be at least 15 characters long.',
+        'rating.required' => 'Please select a rating.',
+        'rating.integer' => 'The rating must be a whole number.',
+        'rating.min' => 'The rating must be at least 1.',
+        'rating.max' => 'The rating must be at most 5.',
+    ]);
+
+    $book->reviews()->create($validatedData);
+
+    return redirect()->route('books.show', compact('book'))->with('review_added', 'A new Review added successfully');
+}
+
+    */
 
     /**
      * Display the specified resource.
