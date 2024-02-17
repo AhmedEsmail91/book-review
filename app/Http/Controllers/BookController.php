@@ -81,7 +81,7 @@ class BookController extends Controller
         
         $book->avg_rating = $book->reviews->avg('rating');
 
-        return view('books.show', ['book'=>$book]);
+        return view('books.show', compact('book'));
 
     }
 

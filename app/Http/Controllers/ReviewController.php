@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Review;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ReviewController extends Controller
 {
@@ -43,31 +46,8 @@ class ReviewController extends Controller
 
     $book->reviews()->create($validatedData);
 
-    return redirect()->route('books.show', compact('book'))->with('review_added', 'A new Review added successfully');
+    return redirect()->route('books.show', ['book'=>$book])->with('review_added', 'A new Review added successfully');
 }
-
-    /*
-    Note: we can cusmize the error(validation) message:
-    public function store(Request $request, Book $book)
-{
-    $validatedData = $request->validate([
-        'review' => 'required|min:15',
-        'rating' => 'required|integer|min:1|max:5',
-    ], [
-        'review.required' => 'The review field is required.',
-        'review.min' => 'The review must be at least 15 characters long.',
-        'rating.required' => 'Please select a rating.',
-        'rating.integer' => 'The rating must be a whole number.',
-        'rating.min' => 'The rating must be at least 1.',
-        'rating.max' => 'The rating must be at most 5.',
-    ]);
-
-    $book->reviews()->create($validatedData);
-
-    return redirect()->route('books.show', compact('book'))->with('review_added', 'A new Review added successfully');
-}
-
-    */
 
     /**
      * Display the specified resource.
@@ -96,8 +76,7 @@ class ReviewController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
+    public function destroy(Review $review){
         //
     }
 }
