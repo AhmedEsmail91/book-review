@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ReviewController extends Controller
 {
+    //make a constructor
+    public function __construct() {
+        $this->middleware('throttle:reviews')->only(['store']);
+    }
     /**
      * Display a listing of the resource.
      */

@@ -1,28 +1,19 @@
-Scoped Resource Controller-Adding a Review:
-in this topic , I would like to add a review for a book.
-but as known the Review can't be exist without a book to make reviews on it.
-so there's a relation which is connect them together to be one Entity.
-Also in routing the route must will be changed, in this seciton we gonna learn more about:
+Rate Limiting:
+-   Amount of times a certian action ca be preformed in a given time frame
+-   Often used with API
+-   Prevents abuse or DDoS attacks
+### Types of Rate Limiting ###
+1. **IP Based** - Restricts access to an application based on the IP address of the client making the request. This is the simplest form of rate limiting and can easily
+2. **Username/Session ID Based** – Restrict access based on user identities (logged in users)
+3. **Key Based** – Restrict access based on some unique key that is passed along with each request (API keys, JWT Tokens etc.)
+####### Real Time Application #######
+in our application we can limit the number of reviews, cause may be of abuse,
+a book or bad reviews category can get high reviews makes it good reviews or a good book
 
-**Scoping Resource Routes**
-Laravel's scoped implicit model binding feature can automatically
-scope nested bindings such that the resolved child model is confirmed to belong to the parent model.
-By using the scoped method when defining your nested resource,
-you may enable automatic scoping as well as instruct Laravel on which field the child resource should be retrieved by
-Ex:
-{
-use App\Http\Controllers\PhotoCommentController;
- 
-Route::resource('photos.comments', PhotoCommentController::class)->scoped([
-    'comment' => 'slug',
-]);
-}
-This route will register a scoped nested resource
-
-that may be accessed with URIs like the following:
-{
-/photos/{photo}/comments/{comment:slug}
-}
-
-BTW: Laravel can figure out the relation between The Book and Reviews Because we told
-Laravel that Book has many Reviews
+RateLimiting Applying:
+** Note: there're alot of web groups for handling any request found in the whole world inside the \App\Http\Kernel.php and those are splitting into web and api groups and for building web-application we got a web key for the group with the prefix web and for Api we got api
+         and there're alies names for middlewares like throttle which has a method for handling the RateLimiting implemented inside it. **
+1- Making the throttle group in the \App\Providers\RouteServiceProvider.php inside configureRateLimiting() Method By defualt it takes a Request argument type.
+2- Build a Constructor in the Model Controller needed this middlewares
+3- Adding  the rate limiter to the constructor by calling the the placed class of controller and then middleware and select the group where you make it and then  its name in this case called reviews then (Optional): you can make an only function to specify the method which will execute the middleware.
+3(AbstractedExplaination)- Injecting the service into the constructor and calling the method inside it from the controller actions

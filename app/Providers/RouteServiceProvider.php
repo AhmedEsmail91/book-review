@@ -32,9 +32,36 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
-
+            /*
+                This service provider is explicitly telling laravel that for the routes 
+                defined inside this web page PHP file it should apply the middleware that is defined inside 
+                web group inside the kernel which is **web** 
+            */
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+        });
+    }
+    /**
+     * onfigure the rate limiters for the application
+     */
+    protected function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            /*
+            The ? after user() means that if there's not user which in that way won't be authenticated (checking if authenticated) 
+            * Return a response if the request hits the max limit.
+            * In this case, we return a JSON response with an error message.
+            */
+            return Limit::perMinute(5)->by($request->user()?->id ?: $request->ip());
+        });
+
+        /*Let's make our own: */
+        RateLimiter::for('reviews'/*Adding the throttling group name called Reviews*/, function (Request $request) {
+            
+            return Limit::perMinute(3)->by($request->user()?->id ?: $request->ip());
+            /*This will terminate any adding request(reviews), which won't be happen with the same id or ip after one hour*/
+            // let's apply the middleware in the ModelController
+            // this will return an error 429 which is Too Many Requests
         });
     }
 }
